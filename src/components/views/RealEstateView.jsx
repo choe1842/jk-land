@@ -2,32 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { 
   Building2, Search, Filter, TrendingUp, TrendingDown, MapPin, 
   Calculator, Calendar, ExternalLink, X, School, Train, Sparkles, Plus, 
-  Star, Navigation as NavIcon, Compass, Sliders, ShieldCheck
+  Star, Navigation as NavIcon, Compass, Sliders, RotateCcw
 } from 'lucide-react';
-import { REGIONS, ALL_APARTMENTS, DISTRICT_COORDINATES } from '../../data/realEstateData';
+import { APARTMENTS_MASTER, CURRENT_YEAR } from '../../data/allApartmentsMaster';
+import { DISTRICT_COORDINATES } from '../../data/realEstateData';
 
 export default function RealEstateView() {
   const [viewMode, setViewMode] = useState('list'); // 'list' | 'gpsMap'
-  const [selectedCity, setSelectedCity] = useState('all');
-  const [selectedDistrict, setSelectedDistrict] = useState('전체');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedApt, setSelectedApt] = useState(null);
 
-  // Price Budget Slider (in 10,000 KRW: 10000 = 1억, 500000 = 50억)
-  const [maxPrice, setMaxPrice] = useState(500000); // default max 50억
-  const [maxGap, setMaxGap] = useState(300000); // default max 30억
+  // Default Filter state requested by user:
+  // "기본 필터 걸려있는거는(풀수있음) 9억~12억대 서울, 경기권 아파트로 볼수있게하면 될듯 연식 32년 아래로 아파트 매물은 일단 다 볼수있게"
+  const [regionScope, setRegionScope] = useState('seoul_gyeonggi'); // 'all' | 'seoul_gyeonggi' | 'seoul' | 'gyeonggi'
+  const [minPrice, setMinPrice] = useState(90000); // 9억 (1억~50억)
+  const [maxPrice, setMaxPrice] = useState(120000); // 12억
+  const [maxAge, setMaxAge] = useState(32); // 32년 이하
   const [onlyMyApartments, setOnlyMyApartments] = useState(false);
 
   // My Favorites (Watchlist)
   const [myApartments, setMyApartments] = useState(() => {
     const saved = localStorage.getItem('jk_my_apartments');
-    return saved ? JSON.parse(saved) : ['apt-1', 'apt-5', 'apt-11'];
+    return saved ? JSON.parse(saved) : ['apt-target-1', 'apt-target-2'];
   });
 
-  const [apartments, setApartments] = useState(() => {
-    const saved = localStorage.getItem('jk_all_apartments');
-    return saved ? JSON.parse(saved) : ALL_APARTMENTS;
-  });
+  const [apartments] = useState(APARTMENTS_MASTER);
 
   useEffect(() => {
     localStorage.setItem('jk_my_apartments', JSON.stringify(myApartments));
@@ -42,12 +41,31 @@ export default function RealEstateView() {
     }
   };
 
-  const handleCityChange = (cityId) => {
-    setSelectedCity(cityId);
-    setSelectedDistrict('전체');
+  // Reset to see all without constraints
+  const resetAllFilters = () => {
+    setRegionScope('all');
+    setMinPrice(10000); // 1억
+    setMaxPrice(500000); // 50억+
+    setMaxAge(50); // 제한 없음
+    setOnlyMyApartments(false);
+    setSearchTerm('');
   };
 
-  const currentDistricts = REGIONS.find((r) => r.id === selectedCity)?.districts || [];
+  // Apply default recommended 9~12억 preset
+  const applyDefaultPreset = () => {
+    setRegionScope('seoul_gyeonggi');
+    setMinPrice(90000);
+    setMaxPrice(120000);
+    setMaxAge(32);
+    setOnlyMyApartments(false);
+  };
+
+  const isDefaultPresetActive =
+    regionScope === 'seoul_gyeonggi' &&
+    minPrice === 90000 &&
+    maxPrice === 120000 &&
+    maxAge === 32 &&
+    !onlyMyApartments;
 
   // Filter apartments
   const filteredApartments = apartments.filter((apt) => {
@@ -63,13 +81,17 @@ export default function RealEstateView() {
     // MY 종목 필터
     if (onlyMyApartments && !myApartments.includes(apt.id)) return false;
 
-    // City & District
-    if (selectedCity !== 'all' && apt.city !== selectedCity) return false;
-    if (selectedDistrict !== '전체' && !apt.district.includes(selectedDistrict)) return false;
+    // Region scope
+    if (regionScope === 'seoul_gyeonggi' && apt.city !== 'seoul' && apt.city !== 'gyeonggi') return false;
+    if (regionScope === 'seoul' && apt.city !== 'seoul') return false;
+    if (regionScope === 'gyeonggi' && apt.city !== 'gyeonggi') return false;
 
-    // Custom Price Slider
-    if (apt.recentPriceNum > maxPrice) return false;
-    if (apt.gapPriceNum && apt.gapPriceNum > maxGap) return false;
+    // Price range (minPrice ~ maxPrice)
+    if (apt.recentPriceNum < minPrice || apt.recentPriceNum > maxPrice) return false;
+
+    // Building age (연식: 현재연도 2026 - 준공연도 <= maxAge)
+    const age = CURRENT_YEAR - apt.builtYear;
+    if (age > maxAge) return false;
 
     return true;
   });
@@ -77,21 +99,23 @@ export default function RealEstateView() {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Top Filter and Search Control Center */}
-      <div className="glass-panel rounded-2xl p-4 md:p-6 border border-slate-800/80 space-y-4">
+      <div className="glass-panel rounded-3xl p-5 md:p-6 border border-slate-800 space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
               <Building2 className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-                <span>네이버 & CODEF 부동산 실거래가 분석</span>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-bold text-slate-100">
+                  전국 아파트 실거래가 & 갭투자 분석
+                </h2>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
                   {filteredApartments.length}개 단지 매칭
                 </span>
-              </h2>
+              </div>
               <p className="text-xs text-slate-400">
-                국토교통부 실거래가 및 네이버 부동산 연동 &bull; GPS 좌표 기반 구역별 조건 탐색
+                1억부터 50억까지 전 단지 실시간 조회 &bull; 국토부/CODEF API 규격 및 네이버 부동산 연동
               </p>
             </div>
           </div>
@@ -126,19 +150,53 @@ export default function RealEstateView() {
               <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="단지명, 법정동, 도로명 검색..."
+                placeholder="단지명, 법정동, 구 검색..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 pr-3 py-2 rounded-xl bg-slate-900/90 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 w-44 md:w-56"
+                className="pl-9 pr-3 py-2 rounded-xl bg-slate-900/90 border border-slate-700/80 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-purple-500 w-44 md:w-56"
               />
             </div>
           </div>
         </div>
 
-        {/* Region & MY 단지 Filters */}
-        <div className="pt-3 border-t border-slate-800/60 space-y-3">
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar text-xs">
-            {/* MY 단지 Filter Pill */}
+        {/* Preset Notification & Reset Bar */}
+        <div className="p-3 rounded-2xl bg-slate-900/90 border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-slate-300">현재 필터:</span>
+            {isDefaultPresetActive ? (
+              <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-medium">
+                🎯 기본 세팅: 서울·경기권 &bull; 9억~12억 &bull; 연식 32년 이하
+              </span>
+            ) : (
+              <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 font-medium">
+                {regionScope === 'all' ? '전국 전체' : '서울·경기'} &bull; {(minPrice/10000).toFixed(0)}억~{(maxPrice/10000).toFixed(0)}억 &bull; 연식 {maxAge}년 이하
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            {!isDefaultPresetActive && (
+              <button
+                onClick={applyDefaultPreset}
+                className="px-2.5 py-1 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 text-[11px] font-bold border border-indigo-500/30 transition-all"
+              >
+                9~12억 기본필터 적용
+              </button>
+            )}
+            <button
+              onClick={resetAllFilters}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-bold transition-all"
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span>전체보기 (필터 해제)</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Detailed Slider & Selectors */}
+        <div className="pt-2 border-t border-slate-800/60 space-y-3 text-xs">
+          {/* Region Tabs & MY 단지 */}
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
             <button
               onClick={() => setOnlyMyApartments(!onlyMyApartments)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold whitespace-nowrap transition-all ${
@@ -153,93 +211,103 @@ export default function RealEstateView() {
 
             <span className="text-slate-600">|</span>
 
-            {/* City Selection */}
-            {REGIONS.map((city) => (
+            {[
+              { id: 'seoul_gyeonggi', label: '수도권 (서울+경기)' },
+              { id: 'seoul', label: '서울 전역' },
+              { id: 'gyeonggi', label: '경기권' },
+              { id: 'all', label: '전국 전체' },
+            ].map((reg) => (
               <button
-                key={city.id}
-                onClick={() => handleCityChange(city.id)}
+                key={reg.id}
+                onClick={() => {
+                  setRegionScope(reg.id);
+                  setOnlyMyApartments(false);
+                }}
                 className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-all ${
-                  selectedCity === city.id && !onlyMyApartments
-                    ? 'bg-purple-600 text-white font-bold shadow-sm shadow-purple-600/30'
+                  regionScope === reg.id && !onlyMyApartments
+                    ? 'bg-purple-600 text-white font-bold shadow-sm'
                     : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
                 }`}
               >
-                {city.name}
+                {reg.label}
               </button>
             ))}
           </div>
 
-          {/* District Selector (if not 'all') */}
-          {selectedCity !== 'all' && currentDistricts.length > 0 && (
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs animate-fadeIn">
-              <span className="text-slate-400 font-semibold whitespace-nowrap">구역:</span>
-              {currentDistricts.map((dist) => (
-                <button
-                  key={dist}
-                  onClick={() => setSelectedDistrict(dist)}
-                  className={`px-2.5 py-1 rounded-md text-[11px] whitespace-nowrap transition-all ${
-                    selectedDistrict === dist
-                      ? 'bg-indigo-600 text-white font-bold'
-                      : 'bg-slate-900/60 text-slate-400 hover:text-slate-200 border border-slate-800'
-                  }`}
-                >
-                  {dist}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Dynamic Budget Sliders (사용자 맞춤 금액 필터) */}
-          <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          {/* Sliders: Min Price, Max Price, and Age */}
+          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Min Price Slider (from 1억) */}
             <div>
               <div className="flex justify-between items-center mb-1">
-                <span className="text-slate-400 font-medium flex items-center gap-1">
-                  <Sliders className="w-3.5 h-3.5 text-purple-400" /> 최대 매매가 상한선:
-                </span>
-                <span className="font-mono font-bold text-rose-400">
-                  {maxPrice >= 500000 ? '제한 없음 (전체)' : `${(maxPrice / 10000).toFixed(1)}억원 이하`}
+                <span className="text-slate-400 font-medium">최소 매매가:</span>
+                <span className="font-mono font-bold text-slate-200">
+                  {minPrice <= 10000 ? '1억원부터' : `${(minPrice / 10000).toFixed(1)}억원`}
                 </span>
               </div>
               <input
                 type="range"
-                min="50000"
+                min="10000"
+                max="300000"
+                step="5000"
+                value={minPrice}
+                onChange={(e) => setMinPrice(Number(e.target.value))}
+                className="w-full accent-purple-500 cursor-pointer"
+              />
+              <div className="flex justify-between text-[10px] text-slate-500 font-mono mt-0.5">
+                <span>1억</span>
+                <span>9억</span>
+                <span>15억</span>
+                <span>30억</span>
+              </div>
+            </div>
+
+            {/* Max Price Slider (up to 50억+) */}
+            <div>
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-slate-400 font-medium">최대 매매가:</span>
+                <span className="font-mono font-bold text-rose-400">
+                  {maxPrice >= 500000 ? '50억 이상 (전체)' : `${(maxPrice / 10000).toFixed(1)}억원`}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="20000"
                 max="500000"
                 step="10000"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(Number(e.target.value))}
-                className="w-full accent-purple-500 cursor-pointer"
+                className="w-full accent-rose-500 cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] text-slate-600 font-mono mt-0.5">
-                <span>5억</span>
-                <span>20억</span>
-                <span>35억</span>
+              <div className="flex justify-between text-[10px] text-slate-500 font-mono mt-0.5">
+                <span>2억</span>
+                <span>12억</span>
+                <span>25억</span>
                 <span>50억+</span>
               </div>
             </div>
 
+            {/* Age Filter (연식 제한) */}
             <div>
               <div className="flex justify-between items-center mb-1">
-                <span className="text-slate-400 font-medium flex items-center gap-1">
-                  <Calculator className="w-3.5 h-3.5 text-indigo-400" /> 갭투자 최대 필요자금:
-                </span>
-                <span className="font-mono font-bold text-indigo-300">
-                  {maxGap >= 300000 ? '제한 없음 (전체)' : `${(maxGap / 10000).toFixed(1)}억원 이하`}
+                <span className="text-slate-400 font-medium">아파트 연식:</span>
+                <span className="font-mono font-bold text-indigo-400">
+                  {maxAge >= 50 ? '전체 연식 (제한 없음)' : `${maxAge}년 이하 (${CURRENT_YEAR - maxAge}년 이후 준공)`}
                 </span>
               </div>
               <input
                 type="range"
-                min="30000"
-                max="300000"
-                step="10000"
-                value={maxGap}
-                onChange={(e) => setMaxGap(Number(e.target.value))}
+                min="5"
+                max="50"
+                step="1"
+                value={maxAge}
+                onChange={(e) => setMaxAge(Number(e.target.value))}
                 className="w-full accent-indigo-500 cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] text-slate-600 font-mono mt-0.5">
-                <span>3억</span>
-                <span>10억</span>
-                <span>20억</span>
-                <span>30억+</span>
+              <div className="flex justify-between text-[10px] text-slate-500 font-mono mt-0.5">
+                <span>5년(신축)</span>
+                <span>15년</span>
+                <span>32년(기본)</span>
+                <span>제한없음</span>
               </div>
             </div>
           </div>
@@ -248,16 +316,16 @@ export default function RealEstateView() {
 
       {/* GPS 구역 인터랙티브 맵 레이더 뷰 */}
       {viewMode === 'gpsMap' && (
-        <div className="glass-panel rounded-2xl p-6 border border-slate-800 space-y-4 animate-fadeIn">
+        <div className="glass-panel rounded-3xl p-6 border border-slate-800 space-y-4 animate-fadeIn">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Compass className="w-5 h-5 text-purple-400 animate-spin-slow" />
+              <Compass className="w-5 h-5 text-purple-400" />
               <h3 className="text-sm font-bold text-slate-200">
-                수도권 핵심 주거벨트 GPS 좌표 레이더
+                GPS 좌표 레이더 & 구역별 단지 매칭
               </h3>
             </div>
             <span className="text-[11px] font-mono text-slate-400">
-              구역 클릭 시 해당 지역 단지가 필터링됩니다
+              구역 클릭 시 해당 위치의 단지 리스트가 필터링됩니다
             </span>
           </div>
 
@@ -268,7 +336,7 @@ export default function RealEstateView() {
                 <div
                   key={distName}
                   onClick={() => {
-                    setSelectedDistrict(distName);
+                    setSearchTerm(distName);
                     setViewMode('list');
                   }}
                   className="p-3.5 rounded-xl bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800 hover:border-purple-500/40 cursor-pointer transition-all group"
@@ -278,7 +346,7 @@ export default function RealEstateView() {
                       {distName}
                     </span>
                     <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-purple-500/10 text-purple-300">
-                      {countInDist}단지
+                      {countInDist}개 단지
                     </span>
                   </div>
                   <div className="text-[10px] font-mono text-slate-500 mt-1">
@@ -295,6 +363,8 @@ export default function RealEstateView() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filteredApartments.map((apt) => {
           const isFav = myApartments.includes(apt.id);
+          const age = CURRENT_YEAR - apt.builtYear;
+
           return (
             <div
               key={apt.id}
@@ -311,6 +381,8 @@ export default function RealEstateView() {
                     <div className="flex items-center gap-1 text-[11px] text-slate-400 mt-0.5">
                       <MapPin className="w-3 h-3 text-purple-400" />
                       <span>{apt.district} {apt.dong}</span>
+                      <span className="text-slate-600">&bull;</span>
+                      <span className="text-indigo-400 font-mono">연식 {age}년차 ({apt.builtYear}년)</span>
                     </div>
                   </div>
 
@@ -415,7 +487,7 @@ export default function RealEstateView() {
                   <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">
                     {selectedApt.district} {selectedApt.dong}
                   </span>
-                  <span className="text-xs text-slate-400">{selectedApt.builtYear}년 준공 &bull; {selectedApt.totalHouseholds}</span>
+                  <span className="text-xs text-slate-400">{selectedApt.builtYear}년 준공 (연식 {CURRENT_YEAR - selectedApt.builtYear}년차) &bull; {selectedApt.totalHouseholds}</span>
                 </div>
                 <h2 className="text-2xl font-black text-slate-100 mt-1 flex items-center gap-2">
                   <span>{selectedApt.name}</span>

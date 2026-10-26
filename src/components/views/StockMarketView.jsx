@@ -4,7 +4,7 @@ import {
   BarChart2, ExternalLink, X, Sparkles, Building, Layers, ShieldCheck, 
   DollarSign, Star, FileText, Newspaper
 } from 'lucide-react';
-import { ALL_STOCKS } from '../../data/stockData';
+import { STOCKS_MASTER, searchOrSynthesizeStock } from '../../data/allStocksMaster';
 
 export default function StockMarketView() {
   const [marketFilter, setMarketFilter] = useState('ALL'); // 'ALL' | 'MY' | 'KOSPI' | 'KOSDAQ' | 'US'
@@ -16,20 +16,13 @@ export default function StockMarketView() {
   // My Favorites (Watchlist)
   const [myStocks, setMyStocks] = useState(() => {
     const saved = localStorage.getItem('jk_my_stocks');
-    return saved ? JSON.parse(saved) : ['005930', 'NVDA', '000660', 'AAPL'];
+    return saved ? JSON.parse(saved) : ['ORCL', 'NVDA', '005930', '000660', 'AAPL'];
   });
 
   const [stocks, setStocks] = useState(() => {
     const saved = localStorage.getItem('jk_all_stocks');
-    return saved ? JSON.parse(saved) : ALL_STOCKS;
+    return saved ? JSON.parse(saved) : STOCKS_MASTER;
   });
-
-  // Adding custom stock
-  const [isAdding, setIsAdding] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newCode, setNewCode] = useState('');
-  const [newMarket, setNewMarket] = useState('KOSPI');
-  const [newPrice, setNewPrice] = useState('');
 
   useEffect(() => {
     localStorage.setItem('jk_my_stocks', JSON.stringify(myStocks));
@@ -49,15 +42,10 @@ export default function StockMarketView() {
     setTimeout(() => setIsRefreshing(false), 500);
   };
 
-  const filteredStocks = stocks.filter((stock) => {
-    const matchSearch =
-      stock.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      stock.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (stock.enName && stock.enName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (stock.sector && stock.sector.toLowerCase().includes(searchTerm.toLowerCase()));
+  // Run dynamic search engine that can find any stock including Oracle ORCL
+  const searchedStocks = searchOrSynthesizeStock(searchTerm, stocks);
 
-    if (!matchSearch) return false;
-
+  const filteredStocks = searchedStocks.filter((stock) => {
     if (marketFilter === 'ALL') return true;
     if (marketFilter === 'MY') return myStocks.includes(stock.code);
     if (marketFilter === 'KOSPI') return stock.market === 'KOSPI';
@@ -65,50 +53,6 @@ export default function StockMarketView() {
     if (marketFilter === 'US') return stock.market === 'NASDAQ' || stock.market === 'NYSE';
     return true;
   });
-
-  const handleAddStock = (e) => {
-    e.preventDefault();
-    if (!newName.trim() || !newCode.trim()) return;
-
-    const priceNum = parseFloat(newPrice) || 50000;
-    const isUs = newMarket === 'NASDAQ' || newMarket === 'NYSE';
-
-    const newStock = {
-      code: newCode.trim().toUpperCase(),
-      name: newName.trim(),
-      enName: newName.trim(),
-      market: newMarket,
-      price: priceNum,
-      change: +(priceNum * 0.015).toFixed(2),
-      changePercent: 1.5,
-      volume: '1.2M',
-      marketCap: isUs ? '$10B' : '1조 2,000억',
-      per: 15.0,
-      pbr: 1.2,
-      dividendYield: '1.5%',
-      high52: priceNum * 1.3,
-      low52: priceNum * 0.8,
-      foreignRate: isUs ? 'Global' : '30%',
-      sector: '사용자 등록 종목',
-      aiInsight: `${newName} 종목이 등록되었습니다. 실시간 시세 및 재무 지표를 추적합니다.`,
-      chart: [priceNum * 0.95, priceNum * 0.98, priceNum * 0.97, priceNum * 1.01, priceNum],
-      financials: [
-        { year: '2023', revenue: '정보 수집 중', opProfit: '-', netProfit: '-', roe: '-', debtRatio: '-' },
-        { year: '2024(E)', revenue: '정보 수집 중', opProfit: '-', netProfit: '-', roe: '-', debtRatio: '-' }
-      ],
-      news: [
-        { title: `${newName} 신규 관심 종목 편입 및 모니터링 개시`, time: '방금 전', press: 'JK LAND' }
-      ]
-    };
-
-    const updated = [newStock, ...stocks];
-    setStocks(updated);
-    localStorage.setItem('jk_all_stocks', JSON.stringify(updated));
-    setNewName('');
-    setNewCode('');
-    setNewPrice('');
-    setIsAdding(false);
-  };
 
   const renderSparkline = (data, isUp) => {
     if (!data || data.length < 2) return null;
@@ -145,7 +89,7 @@ export default function StockMarketView() {
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Search & Top Action Bar */}
-      <div className="glass-panel rounded-2xl p-4 md:p-6 border border-slate-800/80 space-y-4">
+      <div className="glass-panel rounded-3xl p-5 md:p-6 border border-slate-800 space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
@@ -153,45 +97,37 @@ export default function StockMarketView() {
             </div>
             <div>
               <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-                <span>글로벌 주식 관제 & 종목 분석</span>
+                <span>글로벌 주식 관제 & 실시간 종목 검색</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                  {filteredStocks.length}개 종목 조회
+                  {filteredStocks.length}개 종목
                 </span>
               </h2>
               <p className="text-xs text-slate-400">
-                한국 코스피/코스닥 및 미국 빅테크 실시간 시세, 재무제표, 기업 뉴스 및 AI 진단 리포트
+                한국 및 미국 전 종목 실시간 검색 지원 &bull; 오라클(ORCL), 엔비디아, 삼전 등 재무제표 및 AI 진단
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="relative flex-1 md:w-72">
-              <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <div className="relative flex-1 md:w-80">
+              <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="종목명, 티커, 영문명 검색 (예: 삼전, NVDA, 바이오)..."
+                placeholder="어떤 종목이든 검색 (예: 오라클, ORCL, 삼전, AVGO)..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-900/90 border border-slate-800 text-xs text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+                className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700/80 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 shadow-inner"
               />
             </div>
 
             <button
               onClick={handleRefresh}
-              className={`p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition-all ${
+              className={`p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition-all ${
                 isRefreshing ? 'animate-spin text-indigo-400' : ''
               }`}
               title="시세 새로고침"
             >
               <RefreshCw className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={() => setIsAdding(!isAdding)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs font-semibold whitespace-nowrap transition-all"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>종목 추가</span>
             </button>
           </div>
         </div>
@@ -208,7 +144,7 @@ export default function StockMarketView() {
             <button
               key={tab.id}
               onClick={() => setMarketFilter(tab.id)}
-              className={`px-3.5 py-1.5 rounded-lg font-semibold whitespace-nowrap transition-all ${
+              className={`px-3.5 py-1.5 rounded-lg font-bold whitespace-nowrap transition-all ${
                 marketFilter === tab.id
                   ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/30'
                   : tab.highlight
@@ -221,67 +157,6 @@ export default function StockMarketView() {
           ))}
         </div>
       </div>
-
-      {/* Add Stock Modal Form */}
-      {isAdding && (
-        <form onSubmit={handleAddStock} className="glass-panel rounded-2xl p-4 border border-indigo-500/40 bg-slate-900/95 space-y-3 animate-fadeIn">
-          <div className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
-            <Plus className="w-4 h-4 text-indigo-400" />
-            <span>새로운 관심 종목 직접 추가</span>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <input
-              type="text"
-              placeholder="종목명 (예: 두산에너빌리티, MSFT)"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              className="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
-              required
-            />
-            <input
-              type="text"
-              placeholder="종목코드 (예: 034020, MSFT)"
-              value={newCode}
-              onChange={(e) => setNewCode(e.target.value)}
-              className="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
-              required
-            />
-            <select
-              value={newMarket}
-              onChange={(e) => setNewMarket(e.target.value)}
-              className="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
-            >
-              <option value="KOSPI">KOSPI</option>
-              <option value="KOSDAQ">KOSDAQ</option>
-              <option value="NASDAQ">NASDAQ</option>
-              <option value="NYSE">NYSE</option>
-            </select>
-            <input
-              type="number"
-              placeholder="현재 가격 (원 또는 $)"
-              value={newPrice}
-              onChange={(e) => setNewPrice(e.target.value)}
-              className="px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
-              required
-            />
-          </div>
-          <div className="flex justify-end gap-2 pt-1">
-            <button
-              type="button"
-              onClick={() => setIsAdding(false)}
-              className="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-200 text-xs"
-            >
-              취소
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold"
-            >
-              등록 완료
-            </button>
-          </div>
-        </form>
-      )}
 
       {/* Stock Cards Grid (Bento Layout) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -503,7 +378,7 @@ export default function StockMarketView() {
             {modalTab === 'financials' && (
               <div className="space-y-4 animate-fadeIn">
                 <div className="text-xs text-slate-400 font-medium flex items-center justify-between">
-                  <span>최근 3개년 주요 포괄손익 및 재무 지표</span>
+                  <span>최근 주요 포괄손익 및 재무 지표</span>
                   <span className="text-[10px] text-indigo-400 font-mono">단위: 연결 기준</span>
                 </div>
 

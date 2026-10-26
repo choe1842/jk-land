@@ -67,3 +67,4 @@ export const BREAKING_NEWS = [
     url: 'https://finance.naver.com/'
   }
 ];
+

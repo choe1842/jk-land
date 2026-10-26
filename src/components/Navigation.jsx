@@ -1,13 +1,13 @@
 import React from 'react';
-import { LayoutDashboard, TrendingUp, Building2, Newspaper, Bot, Sparkles } from 'lucide-react';
+import { Building2, TrendingUp, Newspaper, MessageSquare, Search, Sparkles } from 'lucide-react';
 
 export default function Navigation({ activeTab, onSelectTab }) {
   const tabs = [
-    { id: 'hub', label: '종합 관제탑', icon: LayoutDashboard },
+    { id: 'realestate', label: '부동산', icon: Building2 },
     { id: 'stocks', label: '주식', icon: TrendingUp },
-    { id: 'realestate', label: '부동산 분석', icon: Building2 },
-    { id: 'news', label: '주요 뉴스', icon: Newspaper, isHot: true },
-    { id: 'aichat', label: 'JK AI & 기록 채팅', icon: Bot, isNew: true },
+    { id: 'news', label: '뉴스', icon: Newspaper, isHot: true },
+    { id: 'chat', label: '채팅', icon: MessageSquare },
+    { id: 'aiSearch', label: 'AI 검색', icon: Search, isAI: true },
   ];
 
   return (
@@ -20,9 +20,9 @@ export default function Navigation({ activeTab, onSelectTab }) {
           <button
             key={tab.id}
             onClick={() => onSelectTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all duration-200 whitespace-nowrap relative ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all duration-200 whitespace-nowrap relative ${
               isActive
-                ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-600/30'
+                ? 'bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-600/30 scale-100'
                 : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/60'
             }`}
           >
@@ -35,7 +35,7 @@ export default function Navigation({ activeTab, onSelectTab }) {
               </span>
             )}
 
-            {tab.isNew && (
+            {tab.isAI && (
               <span className="flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
                 <Sparkles className="w-2.5 h-2.5" /> AI
               </span>
