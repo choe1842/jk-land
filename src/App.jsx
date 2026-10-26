@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from './components/Header';
-import StatsBanner from './components/StatsBanner';
-import ProjectLauncher from './components/ProjectLauncher';
-import Bookmarks from './components/Bookmarks';
-import QuickNotes from './components/QuickNotes';
+import MarketTicker from './components/MarketTicker';
+import Navigation from './components/Navigation';
+import HubView from './components/views/HubView';
+import StockMarketView from './components/views/StockMarketView';
+import RealEstateView from './components/views/RealEstateView';
+import AiChatView from './components/views/AiChatView';
 import AccessGate from './components/AccessGate';
-import { Rocket, Heart } from 'lucide-react';
+import { Rocket, Heart, ShieldCheck } from 'lucide-react';
 
 export default function App() {
+  const [activeTab, setActiveTab] = useState('hub');
   const [isUnlocked, setIsUnlocked] = useState(() => {
     return (
       localStorage.getItem('jk_auth_pass') === 'true' ||
@@ -26,39 +29,43 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 flex flex-col justify-between selection:bg-indigo-500 selection:text-white animate-fadeIn">
-      {/* Background ambient gradient glow */}
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.15),rgba(255,255,255,0))] pointer-events-none" />
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-indigo-500 selection:text-white animate-fadeIn">
+      {/* Background ambient lighting */}
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.12),rgba(255,255,255,0))] pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto w-full relative z-10 flex-1">
-        {/* Top Header */}
+      {/* Top Running Market Ticker */}
+      <MarketTicker />
+
+      {/* Main Content Area */}
+      <div className="max-w-6xl mx-auto w-full px-4 md:px-8 relative z-10 flex-1">
+        {/* Header */}
         <Header onLock={handleLock} />
 
-        {/* Status / Quick Stats */}
-        <StatsBanner />
+        {/* Global Navigation Bar */}
+        <Navigation activeTab={activeTab} onSelectTab={setActiveTab} />
 
-        {/* Main Content Layout */}
-        <div className="space-y-6">
-          {/* Projects & Launcher */}
-          <ProjectLauncher />
-
-          {/* Bookmarks & Quick Notes Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Bookmarks />
-            <QuickNotes />
-          </div>
-        </div>
+        {/* Dynamic Tab Views */}
+        <main className="mb-12">
+          {activeTab === 'hub' && <HubView onNavigate={setActiveTab} />}
+          {activeTab === 'stocks' && <StockMarketView />}
+          {activeTab === 'realestate' && <RealEstateView />}
+          {activeTab === 'aichat' && <AiChatView />}
+        </main>
       </div>
 
       {/* Footer */}
-      <footer className="max-w-6xl mx-auto w-full mt-12 pt-6 border-t border-slate-900 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-3 relative z-10">
-        <div className="flex items-center gap-1.5">
+      <footer className="max-w-6xl mx-auto w-full px-4 md:px-8 py-6 border-t border-slate-900 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-3 relative z-10">
+        <div className="flex items-center gap-2">
           <Rocket className="w-3.5 h-3.5 text-indigo-400" />
-          <span>JK LAND &bull; Personal Web Portal v1.0</span>
+          <span className="font-semibold text-slate-400">JK LAND Control Center v2.0</span>
+          <span className="text-slate-600">&bull;</span>
+          <span className="flex items-center gap-1 text-emerald-400">
+            <ShieldCheck className="w-3 h-3" /> Gate Protected
+          </span>
         </div>
-        <div className="flex items-center gap-1">
-          <span>Protected Area &bull; Built with Antigravity</span>
-          <Heart className="w-3.5 h-3.5 text-rose-500 inline fill-rose-500" />
+        <div className="flex items-center gap-1 text-[11px]">
+          <span>Designed with Web Wizard &bull; Antigravity</span>
+          <Heart className="w-3 h-3 text-rose-500 fill-rose-500 inline ml-0.5" />
         </div>
       </footer>
     </div>
