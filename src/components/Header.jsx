@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Clock, Globe, ShieldCheck } from 'lucide-react';
+import { Sparkles, Clock, Globe, ShieldCheck, Lock } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-export default function Header() {
+export default function Header({ onLock }) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -81,11 +81,23 @@ export default function Header() {
           {/* Quick Celebration Button */}
           <button
             onClick={triggerConfetti}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm transition-colors shadow-md shadow-indigo-600/25 active:scale-95"
+            className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm transition-colors shadow-md shadow-indigo-600/25 active:scale-95"
           >
             <Sparkles className="w-4 h-4" />
             <span>Celebrate!</span>
           </button>
+
+          {/* Re-lock Button */}
+          {onLock && (
+            <button
+              onClick={onLock}
+              className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-slate-200 font-medium text-xs transition-colors"
+              title="화면 잠금"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>잠금</span>
+            </button>
+          )}
         </div>
       </div>
     </header>
