@@ -118,3 +118,4 @@ export const INITIAL_REAL_ESTATE = [
     tags: ['강남신축', '대청역', '학군우수']
   }
 ];
+
