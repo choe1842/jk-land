@@ -1,11 +1,12 @@
 import React from 'react';
-import { LayoutDashboard, TrendingUp, Building2, Bot, Sparkles } from 'lucide-react';
+import { LayoutDashboard, TrendingUp, Building2, Newspaper, Bot, Sparkles } from 'lucide-react';
 
 export default function Navigation({ activeTab, onSelectTab }) {
   const tabs = [
     { id: 'hub', label: '종합 관제탑', icon: LayoutDashboard },
     { id: 'stocks', label: '주식', icon: TrendingUp },
     { id: 'realestate', label: '부동산 분석', icon: Building2 },
+    { id: 'news', label: '주요 뉴스', icon: Newspaper, isHot: true },
     { id: 'aichat', label: 'JK AI & 기록 채팅', icon: Bot, isNew: true },
   ];
 
@@ -28,8 +29,14 @@ export default function Navigation({ activeTab, onSelectTab }) {
             <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
             <span>{tab.label}</span>
 
+            {tab.isHot && (
+              <span className="flex items-center px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                속보
+              </span>
+            )}
+
             {tab.isNew && (
-              <span className="flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              <span className="flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
                 <Sparkles className="w-2.5 h-2.5" /> AI
               </span>
             )}

@@ -5,6 +5,7 @@ import Navigation from './components/Navigation';
 import HubView from './components/views/HubView';
 import StockMarketView from './components/views/StockMarketView';
 import RealEstateView from './components/views/RealEstateView';
+import NewsView from './components/views/NewsView';
 import AiChatView from './components/views/AiChatView';
 import AccessGate from './components/AccessGate';
 import { Rocket, Heart, ShieldCheck } from 'lucide-react';
@@ -29,7 +30,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-indigo-500 selection:text-white animate-fadeIn">
+    <div className="min-h-screen bg-[#06080e] text-slate-100 flex flex-col justify-between selection:bg-indigo-500 selection:text-white antialiased font-sans">
       {/* Background ambient lighting */}
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(99,102,241,0.12),rgba(255,255,255,0))] pointer-events-none" />
 
@@ -49,22 +50,23 @@ export default function App() {
           {activeTab === 'hub' && <HubView onNavigate={setActiveTab} />}
           {activeTab === 'stocks' && <StockMarketView />}
           {activeTab === 'realestate' && <RealEstateView />}
+          {activeTab === 'news' && <NewsView />}
           {activeTab === 'aichat' && <AiChatView />}
         </main>
       </div>
 
       {/* Footer */}
-      <footer className="max-w-6xl mx-auto w-full px-4 md:px-8 py-6 border-t border-slate-900 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-3 relative z-10">
+      <footer className="max-w-6xl mx-auto w-full px-4 md:px-8 py-6 border-t border-slate-900 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-3 relative z-10 font-mono">
         <div className="flex items-center gap-2">
           <Rocket className="w-3.5 h-3.5 text-indigo-400" />
-          <span className="font-semibold text-slate-400">JK LAND Control Center v2.0</span>
+          <span className="font-semibold text-slate-300">JK LAND Control Center v2.5</span>
           <span className="text-slate-600">&bull;</span>
           <span className="flex items-center gap-1 text-emerald-400">
             <ShieldCheck className="w-3 h-3" /> Gate Protected
           </span>
         </div>
-        <div className="flex items-center gap-1 text-[11px]">
-          <span>Designed with Web Wizard &bull; Antigravity</span>
+        <div className="flex items-center gap-1 text-[11px] text-slate-500">
+          <span>Web Wizard &bull; Antigravity</span>
           <Heart className="w-3 h-3 text-rose-500 fill-rose-500 inline ml-0.5" />
         </div>
       </footer>

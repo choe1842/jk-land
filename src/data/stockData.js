@@ -17,8 +17,17 @@ export const ALL_STOCKS = [
     low52: 58500,
     foreignRate: '53.4%',
     sector: '반도체 / IT',
-    aiInsight: 'HBM3E 엔비디아 공급 승인 기대감 및 파운드리 수주 개선이 주가 반등의 핵심 모멘텀입니다. PBR 1.1배 수준은 역사적 저평가 밸류에이션 구간으로 판단됩니다.',
-    chart: [60500, 61000, 60800, 61500, 62000, 62400]
+    aiInsight: 'HBM3E 엔비디아 납품 테스트 통과 기대감 및 파운드리 수율 개선이 주가 반등의 핵심 모멘텀입니다. PBR 1.15배는 역사적 밸류에이션 바닥 구간입니다.',
+    chart: [60500, 61000, 60800, 61500, 62000, 62400],
+    financials: [
+      { year: '2023', revenue: '258조 9,350억', opProfit: '6조 5,670억', netProfit: '15조 4,870억', roe: '4.1%', debtRatio: '25.3%' },
+      { year: '2024(E)', revenue: '305조 2,000억', opProfit: '35조 8,000억', netProfit: '32조 1,000억', roe: '9.8%', debtRatio: '24.1%' },
+      { year: '2025(E)', revenue: '335조 4,000억', opProfit: '48조 2,000억', netProfit: '42조 5,000억', roe: '12.4%', debtRatio: '22.8%' }
+    ],
+    news: [
+      { title: '삼성전자 HBM3E 12단 납품 본격화 조짐... 파운드리 반등 기대', time: '1시간 전', press: '한국경제' },
+      { title: '외국인 순매수 전환... "삼성전자 밸류에이션 저점 확인"', time: '3시간 전', press: '매일경제' }
+    ]
   },
   {
     code: '000660',
@@ -37,8 +46,17 @@ export const ALL_STOCKS = [
     low52: 114000,
     foreignRate: '54.2%',
     sector: '반도체 / AI 메모리',
-    aiInsight: 'HBM3 및 HBM3E 글로벌 시장 점유율 1위 지속 중. AI 데이터센터 향 수요가 견조하며 내년 상반기까지 공급 쇼티지 지속 전망.',
-    chart: [189000, 192000, 191500, 194000, 196000, 198500]
+    aiInsight: 'HBM3 및 HBM3E 글로벌 시장 점유율 1위 독주 중. 빅테크 AI 데이터센터 향 HBM 공급 계약이 2026년까지 선확보된 상태입니다.',
+    chart: [189000, 192000, 191500, 194000, 196000, 198500],
+    financials: [
+      { year: '2023', revenue: '32조 7,660억', opProfit: '-7조 7,300억', netProfit: '-9조 1,380억', roe: '-15.6%', debtRatio: '87.2%' },
+      { year: '2024(E)', revenue: '66조 1,000억', opProfit: '23조 4,000억', netProfit: '19조 2,000억', roe: '28.5%', debtRatio: '45.1%' },
+      { year: '2025(E)', revenue: '79조 5,000억', opProfit: '30조 8,000억', netProfit: '25조 1,000억', roe: '26.8%', debtRatio: '32.4%' }
+    ],
+    news: [
+      { title: 'SK하이닉스 3분기 사상 최대 영업이익 달성... HBM 매출 비중 40% 돌파', time: '2시간 전', press: '조선비즈' },
+      { title: '골드만삭스 "SK하이닉스 목표주가 26만원 상향 유지"', time: '5시간 전', press: '연합뉴스' }
+    ]
   },
   {
     code: '373220',
@@ -57,8 +75,16 @@ export const ALL_STOCKS = [
     low52: 310000,
     foreignRate: '4.8%',
     sector: '2차전지 / 배터리',
-    aiInsight: '전기차 캐즘(일시적 수요 둔화) 속에서도 북미 IRA 보조금 효과와 ESS(에너지저장장치) 수주 확대로 실적 방어 중.',
-    chart: [405000, 401000, 398000, 399000, 394000, 395000]
+    aiInsight: '전기차 일시적 캐즘 국면에도 포드, 벤츠 향 수주 잔고 300조원 돌파. ESS 사업 부문이 신성장 동력으로 부상 중.',
+    chart: [405000, 401000, 398000, 399000, 394000, 395000],
+    financials: [
+      { year: '2023', revenue: '33조 7,450억', opProfit: '2조 1,630억', netProfit: '1조 6,380억', roe: '8.2%', debtRatio: '68.5%' },
+      { year: '2024(E)', revenue: '28조 2,000억', opProfit: '1조 4,500억', netProfit: '9,800억', roe: '4.5%', debtRatio: '65.2%' },
+      { year: '2025(E)', revenue: '35조 1,000억', opProfit: '2조 8,000억', netProfit: '2조 1,000억', roe: '8.8%', debtRatio: '59.0%' }
+    ],
+    news: [
+      { title: 'LG엔솔, 벤츠와 대규모 원통형 배터리 50GWh 공급 계약 체결', time: '4시간 전', press: '머니투데이' }
+    ]
   },
   {
     code: '005380',
@@ -77,88 +103,16 @@ export const ALL_STOCKS = [
     low52: 172000,
     foreignRate: '38.6%',
     sector: '자동차',
-    aiInsight: '인도법인 상장 성공 및 하이브리드(HEV) 판매 호조. 높은 배당 성향과 자사주 소각 등 주주환원 가치 우수.',
-    chart: [230000, 233000, 232000, 235000, 236000, 236000]
-  },
-  {
-    code: '035420',
-    name: 'NAVER',
-    enName: 'Naver Corp',
-    market: 'KOSPI',
-    price: 178500,
-    change: -1500,
-    changePercent: -0.83,
-    volume: '680K',
-    marketCap: '28조 9,600억',
-    per: 19.2,
-    pbr: 1.08,
-    dividendYield: '0.78%',
-    high52: 228000,
-    low52: 153000,
-    foreignRate: '47.5%',
-    sector: '인터넷 / 플랫폼 / AI',
-    aiInsight: '서치플랫폼 광고 단가 회복세 및 클라우드 AI B2B 매출 확대. 라인야후 관련 지정학적 리스크 점진적 완화 단계.',
-    chart: [181000, 180000, 179500, 179000, 178000, 178500]
-  },
-  {
-    code: '035720',
-    name: '카카오',
-    enName: 'Kakao',
-    market: 'KOSPI',
-    price: 38250,
-    change: 650,
-    changePercent: 1.73,
-    volume: '1.2M',
-    marketCap: '17조 1,000억',
-    per: 34.5,
-    pbr: 1.25,
-    dividendYield: '0.18%',
-    high52: 61900,
-    low52: 34500,
-    foreignRate: '25.8%',
-    sector: '모바일 플랫폼',
-    aiInsight: '신규 AI 대화형 서비스 ‘카나나(Kanana)’ 공개 이후 톡비즈 수익성 회복 및 경영 쇄신 작업 진행 중.',
-    chart: [37000, 37500, 37200, 37800, 38000, 38250]
-  },
-  {
-    code: '068270',
-    name: '셀트리온',
-    enName: 'Celltrion',
-    market: 'KOSPI',
-    price: 189400,
-    change: 2200,
-    changePercent: 1.18,
-    volume: '540K',
-    marketCap: '41조 1,200억',
-    per: 42.1,
-    pbr: 2.45,
-    dividendYield: '0.35%',
-    high52: 241000,
-    low52: 139000,
-    foreignRate: '21.4%',
-    sector: '바이오시밀러',
-    aiInsight: '미국 짐펜트라(피하주사 제형) PBM 처방집 등록 완료로 2026년 이후 본격적인 매출 퀀텀 점프 예상.',
-    chart: [185000, 186000, 187500, 186500, 188000, 189400]
-  },
-  {
-    code: '247540',
-    name: '에코프로비엠',
-    enName: 'EcoPro BM',
-    market: 'KOSDAQ',
-    price: 162000,
-    change: -2400,
-    changePercent: -1.46,
-    volume: '410K',
-    marketCap: '15조 8,400억',
-    per: 65.2,
-    pbr: 5.8,
-    dividendYield: '0.30%',
-    high52: 345000,
-    low52: 154000,
-    foreignRate: '10.2%',
-    sector: '2차전지 양극재',
-    aiInsight: '리튬 가격 바닥 확인 및 재고 조정 마무리 단계. 코스피 이전 상장 모멘텀 대기.',
-    chart: [166000, 165000, 163000, 161000, 162500, 162000]
+    aiInsight: '인도법인(HMI) 역대 최대 규모 IPO 상장 성공. 하이브리드 판매 비중 급증 및 주주환원 배당수익률 5%대 매력.',
+    chart: [230000, 233000, 232000, 235000, 236000, 236000],
+    financials: [
+      { year: '2023', revenue: '162조 6,630억', opProfit: '15조 1,260억', netProfit: '12조 2,720억', roe: '16.5%', debtRatio: '172.4%' },
+      { year: '2024(E)', revenue: '172조 5,000억', opProfit: '16조 2,000억', netProfit: '13조 5,000억', roe: '15.8%', debtRatio: '165.0%' },
+      { year: '2025(E)', revenue: '181조 8,000억', opProfit: '17조 1,000억', netProfit: '14조 2,000억', roe: '14.9%', debtRatio: '158.2%' }
+    ],
+    news: [
+      { title: '현대차 인도 상장 첫날 시총 30조 안착... 글로벌 생산 기지 가속', time: '1일 전', press: '이데일리' }
+    ]
   },
   {
     code: '196170',
@@ -177,8 +131,16 @@ export const ALL_STOCKS = [
     low52: 67000,
     foreignRate: '14.8%',
     sector: '바이오 플랫폼',
-    aiInsight: '머크(MSD) 키트루다 SC 제형 임상 3상 성공 및 로열티 수령 임박으로 코스닥 시총 1위 등극.',
-    chart: [355000, 360000, 368000, 364000, 372000, 378500]
+    aiInsight: '머크(MSD) 키트루다SC 글로벌 임상 3상 완료. 2026년부터 연간 1조원 이상의 로열티 유입 예상.',
+    chart: [355000, 360000, 368000, 364000, 372000, 378500],
+    financials: [
+      { year: '2023', revenue: '965억', opProfit: '-44억', netProfit: '-28억', roe: '-1.5%', debtRatio: '32.1%' },
+      { year: '2024(E)', revenue: '1,850억', opProfit: '920억', netProfit: '850억', roe: '24.2%', debtRatio: '24.5%' },
+      { year: '2025(E)', revenue: '4,200억', opProfit: '2,800억', netProfit: '2,500억', roe: '45.0%', debtRatio: '18.2%' }
+    ],
+    news: [
+      { title: '알테오젠, 코스닥 시총 1위 등극... 키트루다SC 독점 지위 유지', time: '2시간 전', press: '바이오스펙테이터' }
+    ]
   },
   {
     code: '012450',
@@ -196,9 +158,17 @@ export const ALL_STOCKS = [
     high52: 395000,
     low52: 102000,
     foreignRate: '34.5%',
-    sector: 'K-방산 / 우주항공',
-    aiInsight: 'K9 자주포 및 천무 다련장 로켓 폴란드/루마니아 등 유럽 수출 수주 잔고 사상 최대치 갱신 중.',
-    chart: [350000, 355000, 358000, 362000, 365000, 368000]
+    sector: 'K-방산 / 항공우주',
+    aiInsight: '폴란드, 루마니아 향 K9 자주포 및 천무 다련장 로켓 수주 잔고 30조 돌파. 유럽 군비 증강 최대 수혜주.',
+    chart: [350000, 355000, 358000, 362000, 365000, 368000],
+    financials: [
+      { year: '2023', revenue: '9조 3,600억', opProfit: '7,050억', netProfit: '6,400억', roe: '14.8%', debtRatio: '245.2%' },
+      { year: '2024(E)', revenue: '11조 2,000억', opProfit: '1조 1,500억', netProfit: '9,800억', roe: '18.2%', debtRatio: '210.5%' },
+      { year: '2025(E)', revenue: '13조 8,000억', opProfit: '1조 5,200억', netProfit: '1조 3,000억', roe: '21.0%', debtRatio: '185.0%' }
+    ],
+    news: [
+      { title: '한화에어로스페이스 루마니아 K9 납품 계약 순항... 연내 추가 수주 기대', time: '3시간 전', press: '아시아경제' }
+    ]
   },
 
   // --- US NASDAQ / S&P 500 ---
@@ -218,9 +188,18 @@ export const ALL_STOCKS = [
     high52: 144.42,
     low52: 39.23,
     foreignRate: 'Global',
-    sector: 'AI 가속기 / 반도체',
-    aiInsight: '차세대 블랙웰(Blackwell) 아키텍처 GPU의 12개월 치 예약 물량 완판. 전 세계 AI 인프라의 독점적 표준.',
-    chart: [135, 137, 139, 138, 140, 141.54]
+    sector: 'AI 반도체 / 가속기',
+    aiInsight: '차세대 블랙웰(Blackwell) B200 칩의 12개월 치 예약 물량 완판. 글로벌 빅테크 자본지출(Capex) 확대로 실적 서프라이즈 지속.',
+    chart: [135, 137, 139, 138, 140, 141.54],
+    financials: [
+      { year: 'FY2023', revenue: '$27.0B', opProfit: '$4.2B', netProfit: '$4.4B', roe: '19.8%', debtRatio: '45.2%' },
+      { year: 'FY2024', revenue: '$60.9B', opProfit: '$33.0B', netProfit: '$29.8B', roe: '91.5%', debtRatio: '32.1%' },
+      { year: 'FY2025(E)', revenue: '$125.0B', opProfit: '$78.0B', netProfit: '$69.5B', roe: '105.0%', debtRatio: '25.0%' }
+    ],
+    news: [
+      { title: '젠슨 황 "블랙웰 칩 수요 미쳤다... 공급이 따라가지 못할 지경"', time: '30분 전', press: 'CNBC' },
+      { title: '엔비디아, 애플 제치고 세계 시가총액 1위 등극 눈앞', time: '1시간 전', press: 'Wall Street Journal' }
+    ]
   },
   {
     code: 'AAPL',
@@ -239,28 +218,16 @@ export const ALL_STOCKS = [
     low52: 164.08,
     foreignRate: 'Global',
     sector: '빅테크 / 스마트폰 / AI',
-    aiInsight: '애플 인텔리전스(Apple Intelligence) 출시와 함께 아이폰 16 시리즈 및 차기 기기 교체 슈퍼사이클 돌입.',
-    chart: [228, 230, 229, 230, 231, 231.41]
-  },
-  {
-    code: 'MSFT',
-    name: '마이크로소프트',
-    enName: 'Microsoft Corp',
-    market: 'NASDAQ',
-    price: 428.15,
-    change: 2.80,
-    changePercent: 0.66,
-    volume: '22.8M',
-    marketCap: '$3.18T',
-    per: 35.1,
-    pbr: 11.8,
-    dividendYield: '0.78%',
-    high52: 468.35,
-    low52: 327.00,
-    foreignRate: 'Global',
-    sector: '클라우드 / 엔터프라이즈 AI',
-    aiInsight: 'Azure 클라우드의 강력한 성장세 및 Copilot 상용화에 힘입어 기업용 소프트웨어 시장 점유율 확고.',
-    chart: [422, 424, 425, 423, 426, 428.15]
+    aiInsight: 'Apple Intelligence iOS 18.1 배포로 아이폰 교체 수요 본격화. 강력한 서비스 부문 마진(70%+)으로 현금 흐름 견고.',
+    chart: [228, 230, 229, 230, 231, 231.41],
+    financials: [
+      { year: 'FY2023', revenue: '$383.3B', opProfit: '$114.3B', netProfit: '$97.0B', roe: '156.1%', debtRatio: '145.8%' },
+      { year: 'FY2024(E)', revenue: '$395.5B', opProfit: '$122.0B', netProfit: '$104.2B', roe: '162.0%', debtRatio: '138.2%' },
+      { year: 'FY2025(E)', revenue: '$425.0B', opProfit: '$135.5B', netProfit: '$115.0B', roe: '170.5%', debtRatio: '125.0%' }
+    ],
+    news: [
+      { title: '애플 인텔리전스 한국어 지원 로드맵 2025년 상반기 확정', time: '3시간 전', press: 'TechCrunch' }
+    ]
   },
   {
     code: 'TSLA',
@@ -279,48 +246,16 @@ export const ALL_STOCKS = [
     low52: 138.80,
     foreignRate: 'Global',
     sector: '전기차 / 자율주행 / 로봇',
-    aiInsight: 'FSD v13 배포 임박 및 사이버캡 로보택시 상용화 로드맵 발표. 에너지 스토리지 사업 부문 이익률 급상승.',
-    chart: [275, 274, 271, 270, 268, 269.19]
-  },
-  {
-    code: 'GOOGL',
-    name: '알파벳 A',
-    enName: 'Alphabet Inc',
-    market: 'NASDAQ',
-    price: 166.99,
-    change: 1.84,
-    changePercent: 1.11,
-    volume: '21.0M',
-    marketCap: '$2.07T',
-    per: 23.4,
-    pbr: 6.8,
-    dividendYield: '0.48%',
-    high52: 191.75,
-    low52: 120.21,
-    foreignRate: 'Global',
-    sector: '검색 / AI / 클라우드',
-    aiInsight: '구글 Gemini AI 검색 개편 및 유튜브 쇼츠 광고 매출 급증. 빅테크 중 가장 매력적인 밸류에이션(PER 23배).',
-    chart: [163, 165, 164.5, 166, 166.2, 166.99]
-  },
-  {
-    code: 'AMZN',
-    name: '아마존',
-    enName: 'Amazon.com',
-    market: 'NASDAQ',
-    price: 187.83,
-    change: 1.45,
-    changePercent: 0.78,
-    volume: '26.4M',
-    marketCap: '$1.96T',
-    per: 41.5,
-    pbr: 7.9,
-    dividendYield: '0.00%',
-    high52: 201.20,
-    low52: 118.35,
-    foreignRate: 'Global',
-    sector: '이커머스 / AWS 클라우드',
-    aiInsight: 'AWS(아마존웹서비스)의 AI 인프라 수주 가속화 및 북미 리테일 물류 효율화에 따른 영업이익률 최고치 달성.',
-    chart: [184, 185.5, 186, 185.8, 187, 187.83]
+    aiInsight: '사이버캡(Cybercab) 로보택시 공개 이후 FSD 기술 가치 재평가. 메가팩(에너지 저장장치) 사업부의 분기 영업이익률 급상승.',
+    chart: [275, 274, 271, 270, 268, 269.19],
+    financials: [
+      { year: '2023', revenue: '$96.8B', opProfit: '$8.9B', netProfit: '$15.0B', roe: '27.9%', debtRatio: '18.5%' },
+      { year: '2024(E)', revenue: '$102.5B', opProfit: '$9.5B', netProfit: '$9.8B', roe: '15.2%', debtRatio: '16.0%' },
+      { year: '2025(E)', revenue: '$124.0B', opProfit: '$14.2B', netProfit: '$13.5B', roe: '18.8%', debtRatio: '14.2%' }
+    ],
+    news: [
+      { title: '일론 머스크 "2025년 캘리포니아·텍사스에서 무인 로보택시 서비스 시작"', time: '2시간 전', press: 'Bloomberg' }
+    ]
   },
   {
     code: 'PLTR',
@@ -339,27 +274,15 @@ export const ALL_STOCKS = [
     low52: 14.48,
     foreignRate: 'Global',
     sector: '빅데이터 / 엔터프라이즈 AI',
-    aiInsight: 'S&P 500 편입 완료. 정부 기관 및 민간 기업용 AIP(인공지능 플랫폼) 도입 폭증으로 분기 흑자 행진 가속.',
-    chart: [41, 42, 42.8, 43.5, 44, 44.86]
-  },
-  {
-    code: 'TSM',
-    name: 'TSMC',
-    enName: 'Taiwan Semiconductor',
-    market: 'NYSE',
-    price: 201.20,
-    change: 3.40,
-    changePercent: 1.72,
-    volume: '15.8M',
-    marketCap: '$1.04T',
-    per: 29.5,
-    pbr: 7.2,
-    dividendYield: '1.25%',
-    high52: 208.50,
-    low52: 85.00,
-    foreignRate: 'Global',
-    sector: '파운드리 반도체 제조',
-    aiInsight: '3nm 및 2nm 공정 가동률 100% 포화 상태. 애플, 엔비디아, AMD 전량 위탁 생산으로 독점적 해자 유지.',
-    chart: [194, 196, 198, 197.5, 200, 201.2]
+    aiInsight: 'S&P 500 편입 완료. 정부 기관(국방부, CIA) 및 상업용 AIP(인공지능 플랫폼) 도입 고객 수 전년 대비 83% 폭증.',
+    chart: [41, 42, 42.8, 43.5, 44, 44.86],
+    financials: [
+      { year: '2023', revenue: '$2.23B', opProfit: '$120M', netProfit: '$210M', roe: '6.5%', debtRatio: '15.2%' },
+      { year: '2024(E)', revenue: '$2.85B', opProfit: '$580M', netProfit: '$510M', roe: '14.2%', debtRatio: '12.0%' },
+      { year: '2025(E)', revenue: '$3.70B', opProfit: '$950M', netProfit: '$840M', roe: '19.5%', debtRatio: '10.5%' }
+    ],
+    news: [
+      { title: '팔란티어, 미 육군과 5억 달러 규모 AI 전장 데이터 분석 계약 체결', time: '1일 전', press: 'Reuters' }
+    ]
   }
 ];
