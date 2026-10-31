@@ -413,3 +413,4 @@ export function searchOrSynthesizeStock(query, existingList = STOCKS_MASTER) {
 
   return [dynamicStock, ...existingList];
 }
+

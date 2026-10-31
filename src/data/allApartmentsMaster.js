@@ -412,3 +412,4 @@ export const APARTMENTS_MASTER = [
     naverLink: 'https://m.land.naver.com/search/result/%ED%8C%90%EA%B5%90%ED%91%B8%EB%A5%B4%EC%A7%80%EC%98%A4%EA%B7%B8%EB%9E%91%EB%B8%94'
   }
 ];
+
